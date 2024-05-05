@@ -1,24 +1,43 @@
-import "react-native-gesture-handler"
-import { NavigationContainer } from "@react-navigation/native"
-import { createDrawerNavigator } from "@react-navigation/drawer"
-import Dashboard from "./DashboardScreen";
-import RegisterScreen from "./register";
-import ChartComponent from "./chart";
-import BloodPressureInput from "./pressure";
-import Login from "./login";
+// app.js
+import React, { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import Dashboard from './DashboardScreen';
+import Login from './Login';
+import RegisterScreen from './register';
+import BloodPressureInput from './pressure';
+import MyPage from './MyPage';
+import Status from './status';
+import Community from './community';
+import writing from './writing_article';
 
 const Drawer = createDrawerNavigator();
 
-export default function App(){
-  return(
+export default function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  return (
     <NavigationContainer>
       <Drawer.Navigator>
-        <Drawer.Screen name="Home" component={Dashboard}/>
-        <Drawer.Screen name="Login" component={Login}/>
-        <Drawer.Screen name="Register" component={RegisterScreen}/>
-        <Drawer.Screen name="Pressure" component={BloodPressureInput}/>
-        <Drawer.Screen name="Statistics" component={ChartComponent}/>
+        {!loggedIn ? (
+          <>
+            <Drawer.Screen name="Home" component={Dashboard} />
+            <Drawer.Screen name="Login" component={Login} />
+            <Drawer.Screen name="Register" component={RegisterScreen} />
+            <Drawer.Screen name="Pressure" component={BloodPressureInput} />
+            <Drawer.Screen name='Status' component={Status}/>
+            <Drawer.Screen name='Community' component={Community}/>
+          </>
+        ) : (
+          <>
+            <Drawer.Screen name="Home" component={Dashboard} />
+            <Drawer.Screen name="MyPage" component={MyPage} />
+            <Drawer.Screen name="Pressure" component={BloodPressureInput} />
+            <Drawer.Screen name='Status' component={Status}/>
+            <Drawer.Screen name='Community' component={Community}/>
+          </>
+        )}
       </Drawer.Navigator>
     </NavigationContainer>
-  )
+  );
 }

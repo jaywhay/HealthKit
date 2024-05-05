@@ -11,6 +11,7 @@ const BloodPressureInput = () => {
     const [average, setAverage] = useState('');
     const [bmi, setbmi] = useState('');
     const [estimatedWeight, setestimatedWeight] = useState('');
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const handleConfirmDate = (event, selectedDate) => {
         const currentDate = selectedDate || date;
@@ -23,6 +24,46 @@ const BloodPressureInput = () => {
         setShowTimePicker(false);
         setDate(currentTime);
     };
+    const handleSubmit = () => {
+        sendDataToServer();
+
+        // 입력창 초기화
+        setSystolic('');
+        setDiastolic('');
+        setAverage('');
+        setbmi('');
+        setestimatedWeight('');
+
+        setIsSubmitted(true)
+    }
+
+    const sendDataToServer = () => {
+        const data = {
+            systolic,
+            diastolic,
+            average,
+            bmi,
+            estimatedWeight,
+            date: date.toISOString() // 날짜를 ISO 형식으로 변환
+        };
+    
+        fetch('https://example.com/api/data', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            console.log('Data sent successfully');
+        })
+        .catch(error => {
+            console.error('There was a problem with your fetch operation:', error);
+        });
+    }
 
     return (
         <View style={styles.container}>
@@ -95,7 +136,7 @@ const BloodPressureInput = () => {
                     />
                 )}
 
-                <TouchableOpacity style={styles.submitButton}>
+                <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
                     <Image style={styles.submitIcon} source={require('./assets/Check_fill.png')} />
                 </TouchableOpacity>
             </View>

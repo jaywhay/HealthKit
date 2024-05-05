@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, TouchableOpacity, Alert, Picker } from 'react-native';
-import axios from 'axios';
 import { useNavigation } from '@react-navigation/native'; // 네비게이션 훅 import
 
 const RegisterScreen = () => {
@@ -18,29 +17,40 @@ const RegisterScreen = () => {
   const [hypertensionInFamily, setHypertensionInFamily] = useState('3');
 
   const handleRegister = async () => {
-    if ( !ID ||!email || !password || !fullName || !gender || !phone || !height || !weight || !smoking || !drinkingFrequency || !hypertensionInFamily) {
+    if (!ID || !email || !password || !fullName || !gender || !phone || !height || !weight || !smoking || !drinkingFrequency || !hypertensionInFamily) {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
 
     try {
-      const response = await axios.post('https://yourapi.com/register', {
-        ID,
-        email,
-        password,
-        fullName,
-        gender,
-        phone,
-        height,
-        weight,
-        smoking,
-        drinkingFrequency,
-        hypertensionInFamily
+      const response = await fetch('https://yourapi.com/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ID,
+          email,
+          password,
+          fullName,
+          gender,
+          phone,
+          height,
+          weight,
+          smoking,
+          drinkingFrequency,
+          hypertensionInFamily
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error('Failed to register');
+      }
+
       Alert.alert('Success', 'You have registered successfully');
       navigation.navigate('Login');
     } catch (error) {
-      Alert.alert('Error', 'Failed to register');
+      Alert.alert('Error', error.message || 'Failed to register');
     }
   };
 
@@ -75,7 +85,6 @@ const RegisterScreen = () => {
         onChangeText={setFullName}
         value={fullName}
         placeholder="Enter your Full Name"
-        secureTextEntry
         autoCapitalize="none"
       />
       <TextInput
@@ -83,7 +92,6 @@ const RegisterScreen = () => {
         onChangeText={setPhone}
         value={phone}
         placeholder="Enter your Phone Numeber"
-        secureTextEntry
         autoCapitalize="none"
       />
       <TextInput
@@ -157,7 +165,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     padding: 20,
   },
   header: {
